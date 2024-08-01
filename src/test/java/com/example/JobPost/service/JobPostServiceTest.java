@@ -88,7 +88,7 @@ class JobPostServiceTest {
 
         jobPostRepository.save(jobPost);
 
-        JobPostRequestDto updateDto = new JobPostRequestDto(jobPost.getId(), "주니어 백엔드 개발자", 10_000, "자세한 내용_수정하기", "Java");
+        JobPostRequestDto updateDto = new JobPostRequestDto(jobPost.getCompanyId(), "주니어 백엔드 개발자", 10_000, "자세한 내용_수정하기", "Java");
 
         // when
         JobPostResponseDto updatedPost = jobPostService.updateJobPost(jobPost.getId(), updateDto);
@@ -168,5 +168,65 @@ class JobPostServiceTest {
 
         // then
         assertFalse(jobPostRepository.findById(jobPost.getId()).isPresent());
+    }
+
+    @Test
+    @DisplayName("회사 ID 변경 시 예외 발생")
+    public void should_ThrowException_When_CompanyIdChanged() {
+
+        // given
+        Company company = companyRepository.findAll().get(0);
+        JobPost jobPost = JobPost.builder()
+                .companyId(company.getId())
+                .jobPosition("주니어 백엔드 개발자")
+                .reward(10_000)
+                .content("자세한 내용")
+                .skills("Java")
+                .build();
+        JobPost savedPost = jobPostRepository.save(jobPost);
+
+        JobPostRequestDto requestDto = JobPostRequestDto.builder()
+                .companyId(2L) // 기존과 다른 회사 ID
+                .jobPosition("프론트엔드 개발자")
+                .reward(15000)
+                .content("프론트엔드 개발자 모집")
+                .skills("JavaScript, React")
+                .build();
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> {
+            jobPostService.updateJobPost(savedPost.getId(), requestDto);
+        });
+    }
+
+    @Test
+    @DisplayName("채용 공고 ID 변경 시 예외 발생")
+    public void should_ThrowException_When_PostIdChanged() {
+
+        // given
+        Company company = companyRepository.findAll().get(0);
+        JobPost jobPost = JobPost.builder()
+                .companyId(company.getId())
+                .jobPosition("주니어 백엔드 개발자")
+                .reward(10_000)
+                .content("자세한 내용")
+                .skills("Java")
+                .build();
+        JobPost savedPost = jobPostRepository.save(jobPost);
+
+        JobPostRequestDto requestDto = JobPostRequestDto.builder()
+                .companyId(savedPost.getCompanyId())
+                .jobPosition("프론트엔드 개발자")
+                .reward(15000)
+                .content("프론트엔드 개발자 모집")
+                .skills("JavaScript, React")
+                .build();
+
+        Long anotherPostId = savedPost.getId() + 1;
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> {
+            jobPostService.updateJobPost(anotherPostId, requestDto);
+        });
     }
 }
