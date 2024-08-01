@@ -52,11 +52,6 @@ public class JobPostService {
             throw new IllegalArgumentException("회사 ID는 변경할 수 없습니다.");
         }
 
-        // 포스트 ID 변경 시도 검증
-        if (!existingJobPost.getId().equals(jobPostId)) {
-            throw new IllegalArgumentException("채용 공고 ID는 변경할 수 없습니다.");
-        }
-
         // 기존 객체의 필드를 업데이트
         JobPost updateDto = JobPost.builder()
                 .id(existingJobPost.getId())
