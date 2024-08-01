@@ -1,6 +1,7 @@
 package com.example.JobPost.service;
 
 import com.example.JobPost.dto.JobPostRequestDto;
+import com.example.JobPost.dto.JobPostResponseDto;
 import com.example.JobPost.model.JobPost;
 import com.example.JobPost.repository.CompanyRepository;
 import com.example.JobPost.repository.JobPostRepository;
@@ -8,20 +9,21 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class JobPostService {
 
-    private JobPostRepository jobPostRepository;
-    private CompanyRepository companyRepository;
+    private final JobPostRepository jobPostRepository;
+    private final CompanyRepository companyRepository;
 
-    public JobPostService(JobPostRepository jobPostRepository, CompanyRepository companyRepository) {
+    public JobPostService(final JobPostRepository jobPostRepository, final CompanyRepository companyRepository) {
         this.jobPostRepository = jobPostRepository;
         this.companyRepository = companyRepository;
     }
 
-    public JobPost createJobPost(JobPostRequestDto jobPostDto){
+    public JobPostResponseDto createJobPost(JobPostRequestDto jobPostDto){
 
         Long companyId = jobPostDto.getCompanyId();
 
@@ -31,34 +33,48 @@ public class JobPostService {
         }
 
         // DTO를 엔티티로 변환
-        JobPost jobPost = jobPostDto.toEntity();
+        JobPost jobPostEntity  = jobPostDto.toEntity();
 
-        return jobPostRepository.save(jobPost);
+        // 엔티티 저장
+        JobPost savedJobPost =  jobPostRepository.save(jobPostEntity);
+
+        return JobPostResponseDto.createFromEntity(savedJobPost);
     }
 
 
-    public JobPost updateJobPost(Long jobPostId, JobPostRequestDto requestDto){
+    public JobPostResponseDto updateJobPost(Long jobPostId, JobPostRequestDto requestDto){
 
         // 주어진 ID로 기존 채용 공고 조회
-        getById(jobPostId);
+        JobPostResponseDto existingJobPost = findJobPostById(jobPostId);
 
-        // DTO를 엔티티로 변환
-        JobPost updatedJobPost = requestDto.toEntity();
+        // 기존 객체의 필드를 업데이트
+        JobPost updatedJobPost = JobPost.builder()
+                .id(existingJobPost.getId())
+                .companyId(existingJobPost.getCompanyId())
+                .jobPosition(requestDto.getJobPosition())
+                .reward(requestDto.getReward())
+                .content(requestDto.getContent())
+                .skills(requestDto.getSkills())
+                .build();
 
-        return jobPostRepository.save(updatedJobPost);
+        // 엔티티 저장
+        JobPost savedJobPost = jobPostRepository.save(updatedJobPost);
+
+        return JobPostResponseDto.createFromEntity(savedJobPost);
     }
 
-    public JobPost getById(Long jobPostId) {
+    public JobPostResponseDto findJobPostById(Long jobPostId) {
+         JobPost findPost = jobPostRepository.findById(jobPostId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 채용 공고 아이디입니다."));
 
-        if(!jobPostRepository.existsById(jobPostId)){
-            throw new IllegalArgumentException("유효하지 않은 채용 공고 아이디 입니다.");
-        }
-
-        return jobPostRepository.getById(jobPostId);
+         return JobPostResponseDto.createFromEntity(findPost);
     }
 
-    public List<JobPost> getAll() {
-        return jobPostRepository.findAll();
+    public List<JobPostResponseDto> getAll() {
+        List<JobPost> jobPosts = jobPostRepository.findAll();
+        return jobPosts.stream()
+                .map(JobPostResponseDto::createFromEntity)
+                .collect(Collectors.toList());
     }
 
     public void delete(Long jobPostId) {

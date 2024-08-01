@@ -1,6 +1,7 @@
 package com.example.JobPost.service;
 
 import com.example.JobPost.dto.JobPostRequestDto;
+import com.example.JobPost.dto.JobPostResponseDto;
 import com.example.JobPost.model.Company;
 import com.example.JobPost.model.JobPost;
 import com.example.JobPost.repository.CompanyRepository;
@@ -47,7 +48,7 @@ class JobPostServiceTest {
         JobPostRequestDto requestDto = new JobPostRequestDto(company.getId(), "주니어 백엔드 개발자", 10_000, "자세한 내용", "Java");
 
         // when
-        JobPost createdPost = jobPostService.createJobPost(requestDto);
+        JobPostResponseDto createdPost = jobPostService.createJobPost(requestDto);
 
         // then
         assertNotNull(createdPost.getId());
@@ -62,7 +63,7 @@ class JobPostServiceTest {
 
         // given
         Long invalidCompanyId = 999L;
-        JobPostRequestDto jobPostDto = new JobPostRequestDto(1L, invalidCompanyId, "주니어 백엔드 개발자", 10_000, "자세한 내용", "Java");
+        JobPostRequestDto jobPostDto = new JobPostRequestDto(invalidCompanyId, "주니어 백엔드 개발자", 10_000, "자세한 내용", "Java");
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -87,10 +88,10 @@ class JobPostServiceTest {
 
         jobPostRepository.save(jobPost);
 
-        JobPostRequestDto updateDto = new JobPostRequestDto(jobPost.getId(), company.getId(), "주니어 백엔드 개발자", 10_000, "자세한 내용_수정하기", "Java");
+        JobPostRequestDto updateDto = new JobPostRequestDto(jobPost.getId(), "주니어 백엔드 개발자", 10_000, "자세한 내용_수정하기", "Java");
 
         // when
-        JobPost updatedPost = jobPostService.updateJobPost(jobPost.getId(), updateDto);
+        JobPostResponseDto updatedPost = jobPostService.updateJobPost(jobPost.getId(), updateDto);
 
         // then
         assertEquals("자세한 내용_수정하기", updatedPost.getContent());
@@ -106,7 +107,7 @@ class JobPostServiceTest {
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> {
-            jobPostService.getById(invalidPostId);
+            jobPostService.findJobPostById(invalidPostId);
         });
     }
 
@@ -136,12 +137,12 @@ class JobPostServiceTest {
         JobPost savedJobPost2 = jobPostRepository.save(jobPost2);
 
         // when
-        List<JobPost> result = jobPostService.getAll();
+        List<JobPostResponseDto> result = jobPostService.getAll();
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting(JobPost::getId)
+        assertThat(result).extracting(JobPostResponseDto::getId)
                 .containsExactlyInAnyOrder(savedJobPost1.getId(), savedJobPost2.getId());
 
     }
