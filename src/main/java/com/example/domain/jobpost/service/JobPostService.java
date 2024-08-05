@@ -7,6 +7,8 @@ import com.example.domain.jobpost.model.JobPost;
 import com.example.domain.jobpost.repository.CompanyRepository;
 import com.example.domain.jobpost.repository.JobPostRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class JobPostService {
         this.companyRepository = companyRepository;
     }
 
+    @Transactional
     public JobPostResponseDto createJobPost(JobPostRequestDto jobPostDto){
 
         Long companyId = jobPostDto.getCompanyId();
@@ -41,6 +44,7 @@ public class JobPostService {
     }
 
 
+    @Transactional
     public JobPostResponseDto updateJobPost(Long jobPostId, JobPostRequestDto requestDto){
 
         // 주어진 ID로 기존 채용 공고 조회
@@ -79,6 +83,7 @@ public class JobPostService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(Long jobPostId) {
         jobPostRepository.deleteById(jobPostId);
     }
