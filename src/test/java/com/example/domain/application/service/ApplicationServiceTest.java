@@ -1,7 +1,7 @@
 package com.example.domain.application.service;
 
 import com.example.domain.application.dto.ApplicationRequestDto;
-import com.example.domain.application.model.Application;
+import com.example.domain.application.dto.ApplicationResponseDto;
 import com.example.domain.application.repository.ApplicationRepository;
 import com.example.domain.jobpost.model.Company;
 import com.example.domain.jobpost.model.JobPost;
@@ -78,12 +78,12 @@ class ApplicationServiceTest {
         ApplicationRequestDto requestDto = new ApplicationRequestDto(savedUser.getId(), savedJobPost.getId());
 
         // when
-        Application result = applicationService.createApplication(requestDto);
+        ApplicationResponseDto result = applicationService.createApplication(requestDto);
 
         // then
         assertNotNull(result);
-        assertEquals(savedUser.getId(), result.getUser().getId());
-        assertEquals(savedJobPost.getId(), result.getJobPost().getId());
+        assertEquals(savedUser.getId(), result.getUserId());
+        assertEquals(savedJobPost.getId(), result.getJobPostId());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.domain.application.model;
 
 import com.example.domain.jobpost.model.JobPost;
 import com.example.domain.user.model.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

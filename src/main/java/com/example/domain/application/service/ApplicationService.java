@@ -1,6 +1,7 @@
 package com.example.domain.application.service;
 
 import com.example.domain.application.dto.ApplicationRequestDto;
+import com.example.domain.application.dto.ApplicationResponseDto;
 import com.example.domain.application.model.Application;
 import com.example.domain.application.repository.ApplicationRepository;
 import com.example.domain.jobpost.model.JobPost;
@@ -28,7 +29,7 @@ public class ApplicationService {
     }
 
     @Transactional
-    public Application createApplication(ApplicationRequestDto requestDto) {
+    public ApplicationResponseDto createApplication(ApplicationRequestDto requestDto) {
 
         // 사용자와 채용 공고 찾기
         User user = userRepository.findById(requestDto.getUserId())
@@ -45,6 +46,8 @@ public class ApplicationService {
         // 지원서 생성 및 저장
         Application application = new Application(user, jobPost, LocalDate.now());
 
-        return applicationRepository.save(application);
+        Application savedApplication = applicationRepository.save(application);
+
+        return ApplicationResponseDto.createFromEntity(savedApplication);
     }
 }

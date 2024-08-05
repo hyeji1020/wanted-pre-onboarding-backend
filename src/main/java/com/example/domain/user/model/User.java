@@ -25,7 +25,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Application> applications = new ArrayList<>();
 
-    @Builder
+
     public User(Long id, String username, int age){
         this.id = id;
         this.username = username;
