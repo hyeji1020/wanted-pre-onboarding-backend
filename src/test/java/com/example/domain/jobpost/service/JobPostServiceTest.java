@@ -1,11 +1,11 @@
-package com.example.JobPost.service;
+package com.example.domain.jobpost.service;
 
-import com.example.JobPost.dto.JobPostRequestDto;
-import com.example.JobPost.dto.JobPostResponseDto;
-import com.example.JobPost.model.Company;
-import com.example.JobPost.model.JobPost;
-import com.example.JobPost.repository.CompanyRepository;
-import com.example.JobPost.repository.JobPostRepository;
+import com.example.domain.jobpost.dto.JobPostRequestDto;
+import com.example.domain.jobpost.dto.JobPostResponseDto;
+import com.example.domain.jobpost.model.Company;
+import com.example.domain.jobpost.model.JobPost;
+import com.example.domain.jobpost.repository.CompanyRepository;
+import com.example.domain.jobpost.repository.JobPostRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,30 +39,19 @@ class JobPostServiceTest {
         companyRepository.deleteAll();
         jobPostRepository.deleteAll();
 
+        // Company 객체 생성 및 저장
         savedCompany = new Company(1L, "네이버", "판교");
         savedCompany =companyRepository.save(savedCompany);
 
         // JobPost 객체 생성 및 저장
         JobPost jobPost = JobPost.builder()
-                .companyId(savedCompany.getId())
+                .company(savedCompany)
                 .jobPosition("주니어 백엔드 개발자")
                 .reward(10_000)
                 .content("자세한 내용")
                 .skills("Java")
                 .build();
         savedJobPost = jobPostRepository.save(jobPost);
-    }
-
-
-    @Test
-    @DisplayName("채용 공고 조회 시 성공")
-    void should_Get_JobPost_Successfully() {
-        // when
-        JobPostResponseDto result = jobPostService.findJobPostById(savedJobPost.getId());
-
-        // then
-        assertNotNull(result);
-        assertEquals(savedJobPost.getId(), result.getId());
     }
 
     @Test
@@ -72,7 +61,7 @@ class JobPostServiceTest {
         // given
         JobPostRequestDto createDto = JobPostRequestDto.builder()
                 .companyId(savedCompany.getId())
-                .jobPosition("수정된 주니어 백엔드 개발자")
+                .jobPosition("프론트엔드 개발자")
                 .reward(15_000)
                 .content("자세한 내용")
                 .skills("Java, Spring")
@@ -84,8 +73,18 @@ class JobPostServiceTest {
         // then
         assertNotNull(createdPost.getId());
         assertEquals(createdPost.getJobPosition(), createDto.getJobPosition());
-        assertEquals(createdPost.getCompanyId(), createDto.getCompanyId());
+    }
 
+    @Test
+    @DisplayName("채용 공고 조회 시 성공")
+    void should_Get_JobPost_Successfully() {
+
+        // when
+        JobPostResponseDto result = jobPostService.findJobPostById(savedJobPost.getId());
+
+        // then
+        assertNotNull(result);
+        assertEquals(savedJobPost.getId(), result.getId());
     }
 
     @Test
@@ -96,7 +95,7 @@ class JobPostServiceTest {
         Long invalidCompanyId = 999L;
         JobPostRequestDto createDto = JobPostRequestDto.builder()
                 .companyId(invalidCompanyId)
-                .jobPosition("수정된 주니어 백엔드 개발자")
+                .jobPosition("주니어 백엔드 개발자")
                 .reward(15_000)
                 .content("자세한 내용")
                 .skills("Java, Spring")
@@ -106,16 +105,15 @@ class JobPostServiceTest {
         assertThrows(IllegalArgumentException.class, () -> {
             jobPostService.createJobPost(createDto);
         });
-
     }
 
     @Test
-    @DisplayName("채용공고 수정 시 성공")
+    @DisplayName("채용 공고 수정 시 성공")
     void should_Update_JobPost_Successfully() {
 
         // given
         JobPostRequestDto updateDto = JobPostRequestDto.builder()
-                .companyId(savedJobPost.getCompanyId())
+                .companyId(savedCompany.getId())
                 .jobPosition("수정된 주니어 백엔드 개발자")
                 .reward(15_000)
                 .content("수정된 내용")
@@ -129,7 +127,6 @@ class JobPostServiceTest {
         assertEquals(updateDto.getJobPosition(), updatedPost.getJobPosition());
         assertEquals(updateDto.getReward(), updatedPost.getReward());
         assertEquals(updateDto.getContent(), updatedPost.getContent());
-
     }
 
     @Test
@@ -151,7 +148,7 @@ class JobPostServiceTest {
 
         // given
         JobPost jobPost2 = JobPost.builder()
-                .companyId(savedCompany.getId())
+                .company(savedCompany)
                 .jobPosition("주니어 개발자")
                 .reward(20_00000)
                 .content("자세한 내용")
@@ -168,7 +165,6 @@ class JobPostServiceTest {
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).extracting(JobPostResponseDto::getId)
                 .containsExactlyInAnyOrder(savedJobPost.getId(), savedJobPost2.getId());
-
     }
 
     @Test
@@ -188,10 +184,10 @@ class JobPostServiceTest {
 
         // given
         JobPostRequestDto updateDto = JobPostRequestDto.builder()
-                .companyId(2L) // 기존과 다른 회사 ID
+                .companyId(2L) 
                 .jobPosition("프론트엔드 개발자")
                 .reward(15000)
-                .content("프론트엔드 개발자 모집")
+                .content("수정된 내용")
                 .skills("JavaScript, React")
                 .build();
 

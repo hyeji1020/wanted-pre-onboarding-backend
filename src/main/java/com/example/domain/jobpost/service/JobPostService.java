@@ -1,11 +1,11 @@
-package com.example.JobPost.service;
+package com.example.domain.jobpost.service;
 
-import com.example.JobPost.dto.JobPostRequestDto;
-import com.example.JobPost.dto.JobPostResponseDto;
-import com.example.JobPost.model.JobPost;
-import com.example.JobPost.repository.CompanyRepository;
-import com.example.JobPost.repository.JobPostRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import com.example.domain.jobpost.model.Company;
+import com.example.domain.jobpost.dto.JobPostRequestDto;
+import com.example.domain.jobpost.dto.JobPostResponseDto;
+import com.example.domain.jobpost.model.JobPost;
+import com.example.domain.jobpost.repository.CompanyRepository;
+import com.example.domain.jobpost.repository.JobPostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,12 +28,11 @@ public class JobPostService {
         Long companyId = jobPostDto.getCompanyId();
 
         // 회사 ID 유효성 검증
-        if (companyId == null || !companyRepository.existsById(companyId)) {
-            throw new IllegalArgumentException("유효하지 않은 회사 ID입니다.");
-        }
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException("유효하지 않은 회사 ID 입니다."));
 
         // DTO를 엔티티로 변환
-        JobPost jobPostEntity  = jobPostDto.toEntity();
+        JobPost jobPostEntity  = jobPostDto.toEntity(company);
 
         // 엔티티 저장
         JobPost savedJobPost =  jobPostRepository.save(jobPostEntity);
@@ -47,15 +46,13 @@ public class JobPostService {
         // 주어진 ID로 기존 채용 공고 조회
         JobPostResponseDto existingJobPost = findJobPostById(jobPostId);
 
-        // 회사 ID 변경 시도 검증
-        if (!existingJobPost.getCompanyId().equals(requestDto.getCompanyId())) {
-            throw new IllegalArgumentException("회사 ID는 변경할 수 없습니다.");
-        }
+        // 회사 ID 유효성 검증
+        Company company = companyRepository.findById(requestDto.getCompanyId()).orElseThrow(
+                () -> new IllegalArgumentException("유효하지 않은 회사 ID 입니다."));
 
         // 기존 객체의 필드를 업데이트
         JobPost updateDto = JobPost.builder()
-                .id(existingJobPost.getId())
-                .companyId(existingJobPost.getCompanyId())
+                .company(company)
                 .jobPosition(requestDto.getJobPosition())
                 .reward(requestDto.getReward())
                 .content(requestDto.getContent())
@@ -78,7 +75,7 @@ public class JobPostService {
     public List<JobPostResponseDto> getAll() {
         List<JobPost> jobPosts = jobPostRepository.findAll();
         return jobPosts.stream()
-                .map(JobPostResponseDto::createFromEntity)
+                .map(JobPostResponseDto::simpleCreateFromEntity)
                 .collect(Collectors.toList());
     }
 

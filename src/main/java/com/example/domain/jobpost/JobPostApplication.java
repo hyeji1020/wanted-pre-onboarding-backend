@@ -1,4 +1,4 @@
-package com.example.JobPost;
+package com.example.domain.jobpost;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
