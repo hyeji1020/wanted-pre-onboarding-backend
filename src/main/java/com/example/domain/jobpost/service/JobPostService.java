@@ -1,5 +1,9 @@
 package com.example.domain.jobpost.service;
 
+import com.example.domain.company.exception.CompanyErrorCode;
+import com.example.domain.company.exception.CompanyException;
+import com.example.domain.jobpost.exception.JobPostErrorCode;
+import com.example.domain.jobpost.exception.JobPostException;
 import com.example.domain.jobpost.model.Company;
 import com.example.domain.jobpost.dto.JobPostRequestDto;
 import com.example.domain.jobpost.dto.JobPostResponseDto;
@@ -33,7 +37,7 @@ public class JobPostService {
 
         // 회사 ID 유효성 검증
         Company company = companyRepository.findById(companyId).orElseThrow(
-                () -> new IllegalArgumentException("유효하지 않은 회사 ID 입니다."));
+                () -> new CompanyException(CompanyErrorCode.NOTFOUND_COMPANY_ID));
 
         // DTO를 엔티티로 변환
         JobPost jobPostEntity  = jobPostDto.toEntity(company);
@@ -53,7 +57,7 @@ public class JobPostService {
 
         // 회사 ID 유효성 검증
         Company company = companyRepository.findById(requestDto.getCompanyId()).orElseThrow(
-                () -> new IllegalArgumentException("유효하지 않은 회사 ID 입니다."));
+                () -> new CompanyException(CompanyErrorCode.NOTFOUND_COMPANY_ID));
 
         // 기존 객체의 필드를 업데이트
         JobPost updatedJobPost = JobPost.builder()
@@ -74,7 +78,7 @@ public class JobPostService {
     public JobPostResponseDto findJobPostById(Long jobPostId) {
 
         JobPost jobPost = jobPostRepository.findById(jobPostId)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 채용 공고 아이디입니다."));
+                .orElseThrow(() -> new JobPostException(JobPostErrorCode.NOTFOUND_JOBPOST_ID));
 
         // 동일한 회사의 다른 채용 공고를 수집
         List<JobPost> allJobPosts = jobPostRepository.findByCompanyId(jobPost.getCompany().getId());

@@ -1,7 +1,9 @@
 package com.example.domain.jobpost.service;
 
+import com.example.domain.company.exception.CompanyException;
 import com.example.domain.jobpost.dto.JobPostRequestDto;
 import com.example.domain.jobpost.dto.JobPostResponseDto;
+import com.example.domain.jobpost.exception.JobPostException;
 import com.example.domain.jobpost.model.Company;
 import com.example.domain.jobpost.model.JobPost;
 import com.example.domain.jobpost.repository.CompanyRepository;
@@ -41,7 +43,7 @@ class JobPostServiceTest {
 
         // Company 객체 생성 및 저장
         savedCompany = new Company(1L, "네이버", "판교");
-        savedCompany =companyRepository.save(savedCompany);
+        savedCompany = companyRepository.save(savedCompany);
 
         // JobPost 객체 생성 및 저장
         JobPost jobPost = JobPost.builder()
@@ -102,7 +104,7 @@ class JobPostServiceTest {
                 .build();
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(CompanyException.class, () -> {
             jobPostService.createJobPost(createDto);
         });
     }
@@ -138,7 +140,7 @@ class JobPostServiceTest {
         Long invalidPostId = 999L;
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(JobPostException.class, () -> {
             jobPostService.findJobPostById(invalidPostId);
         });
     }
@@ -185,7 +187,7 @@ class JobPostServiceTest {
 
         // given
         JobPostRequestDto updateDto = JobPostRequestDto.builder()
-                .companyId(2L) 
+                .companyId(2L)
                 .jobPosition("프론트엔드 개발자")
                 .reward(15000)
                 .content("수정된 내용")
@@ -193,7 +195,7 @@ class JobPostServiceTest {
                 .build();
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(CompanyException.class, () -> {
             jobPostService.updateJobPost(savedJobPost.getId(), updateDto);
         });
     }

@@ -2,11 +2,14 @@ package com.example.domain.application.service;
 
 import com.example.domain.application.dto.ApplicationRequestDto;
 import com.example.domain.application.dto.ApplicationResponseDto;
+import com.example.domain.application.exception.ApplyException;
 import com.example.domain.application.repository.ApplicationRepository;
+import com.example.domain.jobpost.exception.JobPostException;
 import com.example.domain.jobpost.model.Company;
 import com.example.domain.jobpost.model.JobPost;
 import com.example.domain.jobpost.repository.CompanyRepository;
 import com.example.domain.jobpost.repository.JobPostRepository;
+import com.example.domain.user.exception.UserException;
 import com.example.domain.user.model.User;
 import com.example.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,11 +98,11 @@ class ApplicationServiceTest {
         applicationService.createApplication(requestDto);
 
         // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        ApplyException exception = assertThrows(ApplyException.class, () -> {
             applicationService.createApplication(requestDto);
         });
 
-        assertEquals("사용자는 이 채용 공고에 이미 지원했습니다.", exception.getMessage());
+        assertEquals("사용자는 이미 해당 채용 공고에 지원했습니다.", exception.getMessage());
     }
 
     @Test
@@ -111,7 +114,7 @@ class ApplicationServiceTest {
         ApplicationRequestDto requestDto = new ApplicationRequestDto(invalidUserId, savedJobPost.getId());
 
         // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        UserException exception = assertThrows(UserException.class, () -> {
             applicationService.createApplication(requestDto);
         });
 
@@ -127,7 +130,7 @@ class ApplicationServiceTest {
         ApplicationRequestDto requestDto = new ApplicationRequestDto(savedUser.getId(), invalidJobPostId);
 
         // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        JobPostException exception = assertThrows(JobPostException.class, () -> {
             applicationService.createApplication(requestDto);
         });
 
