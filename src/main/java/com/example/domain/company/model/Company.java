@@ -1,4 +1,4 @@
-package com.example.domain.jobpost.model;
+package com.example.domain.company.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

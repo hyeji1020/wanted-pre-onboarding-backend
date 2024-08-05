@@ -1,6 +1,6 @@
 package com.example.domain.jobpost.dto;
 
-import com.example.domain.jobpost.model.Company;
+import com.example.domain.company.model.Company;
 import com.example.domain.jobpost.model.JobPost;
 import lombok.Builder;
 import lombok.Getter;

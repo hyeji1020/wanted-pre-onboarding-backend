@@ -1,6 +1,7 @@
 package com.example.domain.jobpost.model;
 
 import com.example.domain.application.model.Application;
+import com.example.domain.company.model.Company;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

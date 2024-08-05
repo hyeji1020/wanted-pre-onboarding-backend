@@ -1,6 +1,6 @@
-package com.example.domain.jobpost.repository;
+package com.example.domain.company.repository;
 
-import com.example.domain.jobpost.model.Company;
+import com.example.domain.company.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
