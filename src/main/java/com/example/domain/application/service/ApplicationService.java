@@ -14,7 +14,6 @@ import com.example.domain.user.exception.UserErrorCode;
 import com.example.domain.user.exception.UserException;
 import com.example.domain.user.model.User;
 import com.example.domain.user.repository.UserRepository;
-import org.springframework.context.ApplicationContextException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +49,11 @@ public class ApplicationService {
             throw new ApplyException(ApplyErrorCode.ALREADY_APPLY);
         }
 
-        // 지원서 생성 및 저장
-        Application application = new Application(user, jobPost, LocalDate.now());
+        Application application = Application.builder()
+                .user(user)
+                .jobPost(jobPost)
+                .applicationDate(LocalDate.now())
+                .build();
 
         Application savedApplication = applicationRepository.save(application);
 

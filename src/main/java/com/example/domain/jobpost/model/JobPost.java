@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +29,11 @@ public class JobPost {
     private Company company;
 
     private String jobPosition;
+
     private int reward;
+
     private String content;
+
     private String skills;
 
     @OneToMany(mappedBy = "jobPost")

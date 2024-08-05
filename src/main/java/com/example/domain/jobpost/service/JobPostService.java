@@ -93,7 +93,9 @@ public class JobPostService {
     }
 
     public List<JobPostResponseDto> getAll() {
+
         List<JobPost> jobPosts = jobPostRepository.findAll();
+
         return jobPosts.stream()
                 .map(JobPostResponseDto::simpleCreateFromEntity)
                 .collect(Collectors.toList());

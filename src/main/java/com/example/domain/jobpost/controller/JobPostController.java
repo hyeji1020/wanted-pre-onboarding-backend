@@ -6,6 +6,7 @@ import com.example.domain.jobpost.service.JobPostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -21,7 +22,7 @@ public class JobPostController {
 
     // 채용공고 등록
     @PostMapping
-    public ResponseEntity<JobPostResponseDto> createJobPost(@RequestBody JobPostRequestDto jobPostRequestDto){
+    public ResponseEntity<JobPostResponseDto> createJobPost(@Valid @RequestBody JobPostRequestDto jobPostRequestDto){
         JobPostResponseDto createdPost = jobPostService.createJobPost(jobPostRequestDto);
         return ResponseEntity.ok(createdPost);
     }
@@ -41,7 +42,7 @@ public class JobPostController {
     }
 
     @PutMapping("/{jobPostId}")
-    public ResponseEntity<JobPostResponseDto> updateJobPost(@PathVariable Long jobPostId, @RequestBody JobPostRequestDto jobPostRequestDto) {
+    public ResponseEntity<JobPostResponseDto> updateJobPost(@PathVariable Long jobPostId, @Valid @RequestBody JobPostRequestDto jobPostRequestDto) {
         JobPostResponseDto updatedPost = jobPostService.updateJobPost(jobPostId, jobPostRequestDto);
         return ResponseEntity.ok(updatedPost);
     }

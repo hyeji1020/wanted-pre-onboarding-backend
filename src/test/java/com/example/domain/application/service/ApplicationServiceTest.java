@@ -59,8 +59,12 @@ class ApplicationServiceTest {
         savedCompany = companyRepository.save(savedCompany);
 
         // User 객체 생성 및 저장
-        savedUser = new User(1L, "홍길동", 28);
-        savedUser = userRepository.save(savedUser);
+        User user = User.builder()
+                .id(1L)
+                .age(30)
+                .username("홍길동")
+                .build();
+        savedUser = userRepository.save(user);
 
         // JobPost 객체 생성 및 저장
         JobPost jobPost = JobPost.builder()

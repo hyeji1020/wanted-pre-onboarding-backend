@@ -18,7 +18,7 @@ public class Application {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -28,9 +28,10 @@ public class Application {
 
     private LocalDate applicationDate;
 
-    public Application(User user, JobPost jobPost, LocalDate now) {
+    @Builder
+    public Application(User user, JobPost jobPost, LocalDate applicationDate) {
         this.user = user;
         this.jobPost = jobPost;
-        this.applicationDate = now;
+        this.applicationDate = applicationDate;
     }
 }

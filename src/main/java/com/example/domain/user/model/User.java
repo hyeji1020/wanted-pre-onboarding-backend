@@ -22,13 +22,15 @@ public class User {
     private String username;
     private int age;
 
-    @OneToMany(mappedBy = "user")
-    private List<Application> applications = new ArrayList<>();
+    @OneToOne(mappedBy = "user")
+    private Application application;
 
-
-    public User(Long id, String username, int age){
+    @Builder
+    public User(Long id, String username, int age, Application application){
         this.id = id;
         this.username = username;
         this.age = age;
+        this.application = application;
     }
+
 }
