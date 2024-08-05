@@ -4,17 +4,15 @@ import com.example.domain.jobpost.model.Company;
 import com.example.domain.jobpost.model.JobPost;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class JobPostRequestDto {
 
-    private Long companyId;
-    private String jobPosition;
-    private int reward;
-    private String content;
-    private String skills;
+    private final Long companyId;
+    private final String jobPosition;
+    private final int reward;
+    private final String content;
+    private final String skills;
 
     @Builder
     public JobPostRequestDto(Long companyId, String jobPosition,

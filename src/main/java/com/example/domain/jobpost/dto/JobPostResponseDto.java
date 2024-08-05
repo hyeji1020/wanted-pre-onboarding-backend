@@ -1,22 +1,31 @@
 package com.example.domain.jobpost.dto;
 
 import com.example.domain.jobpost.model.JobPost;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-@Builder
 public class JobPostResponseDto {
 
-    private Long id;
-    private String companyName;
-    private String address;
-    private String jobPosition;
-    private String content;
-    private int reward;
-    private String skills;
+    private final Long id;
+    private final String companyName;
+    private final String address;
+    private final String jobPosition;
+    private final String content;
+    private final int reward;
+    private final String skills;
+
+    @Builder
+    public JobPostResponseDto(Long id, String companyName, String address, String jobPosition, String content, int reward, String skills) {
+        this.id = id;
+        this.companyName = companyName;
+        this.address = address;
+        this.jobPosition = jobPosition;
+        this.content = content;
+        this.reward = reward;
+        this.skills = skills;
+    }
+
 
     // 채용 내용 포함
     public static JobPostResponseDto createFromEntity(JobPost jobPost) {
