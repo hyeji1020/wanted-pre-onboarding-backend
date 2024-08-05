@@ -197,4 +197,27 @@ class JobPostServiceTest {
             jobPostService.updateJobPost(savedJobPost.getId(), updateDto);
         });
     }
+
+    @Test
+    @DisplayName("채용 공고 상세 조회 시 회사의 다른 공고 목록 포함하여 반환")
+    void should_Return_JobPostDetail_With_OtherJobPostIds() {
+
+        // given
+        JobPost jobPost2 = JobPost.builder()
+                .company(savedCompany)
+                .jobPosition("주니어 개발자")
+                .reward(20_00000)
+                .content("자세한 내용")
+                .skills("spring")
+                .build();
+        JobPost savedPost = jobPostRepository.save(jobPost2);
+
+        // when
+        JobPostResponseDto result = jobPostService.findJobPostById(savedJobPost.getId());
+
+        // then
+        assertNotNull(result);
+        assertEquals(1, result.getOtherJobPostIds().size());
+        assertTrue(result.getOtherJobPostIds().contains(savedPost.getId()));
+    }
 }

@@ -4,6 +4,8 @@ import com.example.domain.jobpost.model.JobPost;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class JobPostResponseDto {
 
@@ -14,9 +16,13 @@ public class JobPostResponseDto {
     private final String content;
     private final int reward;
     private final String skills;
+    private final List<Long> otherJobPostIds;
 
     @Builder
-    public JobPostResponseDto(Long id, String companyName, String address, String jobPosition, String content, int reward, String skills) {
+    public JobPostResponseDto(Long id, String companyName,
+                              String address, String jobPosition,
+                              String content, int reward,
+                              String skills, List<Long> otherJobPostIds) {
         this.id = id;
         this.companyName = companyName;
         this.address = address;
@@ -24,6 +30,7 @@ public class JobPostResponseDto {
         this.content = content;
         this.reward = reward;
         this.skills = skills;
+        this.otherJobPostIds = otherJobPostIds;
     }
 
 
@@ -49,6 +56,20 @@ public class JobPostResponseDto {
                 .jobPosition(jobPost.getJobPosition())
                 .reward(jobPost.getReward())
                 .skills(jobPost.getSkills())
+                .build();
+    }
+
+    // 다른 jobPostId 포함
+    public static JobPostResponseDto detailCreateFromEntity(JobPost jobPost, List<Long> otherJobPostIds) {
+        return JobPostResponseDto.builder()
+                .id(jobPost.getId())
+                .companyName(jobPost.getCompany().getName())
+                .address(jobPost.getCompany().getAddress())
+                .jobPosition(jobPost.getJobPosition())
+                .content(jobPost.getContent())
+                .reward(jobPost.getReward())
+                .skills(jobPost.getSkills())
+                .otherJobPostIds(otherJobPostIds)
                 .build();
     }
 }

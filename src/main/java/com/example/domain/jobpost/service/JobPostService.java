@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,10 +72,20 @@ public class JobPostService {
     }
 
     public JobPostResponseDto findJobPostById(Long jobPostId) {
-         JobPost findPost = jobPostRepository.findById(jobPostId)
+
+        JobPost jobPost = jobPostRepository.findById(jobPostId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 채용 공고 아이디입니다."));
 
-         return JobPostResponseDto.createFromEntity(findPost);
+        // 동일한 회사의 다른 채용 공고를 수집
+        List<JobPost> allJobPosts = jobPostRepository.findByCompanyId(jobPost.getCompany().getId());
+        List<Long> otherJobPostIds = new ArrayList<>();
+
+        for (JobPost post : allJobPosts) {
+            if (!post.getId().equals(jobPostId)) {
+                otherJobPostIds.add(post.getId());
+            }
+        }
+        return JobPostResponseDto.detailCreateFromEntity(jobPost, otherJobPostIds);
     }
 
     public List<JobPostResponseDto> getAll() {
