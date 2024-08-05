@@ -48,14 +48,15 @@ public class JobPostService {
     public JobPostResponseDto updateJobPost(Long jobPostId, JobPostRequestDto requestDto){
 
         // 주어진 ID로 기존 채용 공고 조회
-        JobPostResponseDto existingJobPost = findJobPostById(jobPostId);
+        findJobPostById(jobPostId);
 
         // 회사 ID 유효성 검증
         Company company = companyRepository.findById(requestDto.getCompanyId()).orElseThrow(
                 () -> new IllegalArgumentException("유효하지 않은 회사 ID 입니다."));
 
         // 기존 객체의 필드를 업데이트
-        JobPost updateDto = JobPost.builder()
+        JobPost updatedJobPost = JobPost.builder()
+                .id(jobPostId)
                 .company(company)
                 .jobPosition(requestDto.getJobPosition())
                 .reward(requestDto.getReward())
@@ -64,7 +65,7 @@ public class JobPostService {
                 .build();
 
         // 엔티티 저장
-        JobPost updatedJobPost = jobPostRepository.save(updateDto);
+        jobPostRepository.save(updatedJobPost);
 
         return JobPostResponseDto.createFromEntity(updatedJobPost);
     }

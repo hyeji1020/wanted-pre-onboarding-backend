@@ -26,7 +26,8 @@ public class JobPost {
     private String skills;
 
     @Builder
-    public JobPost(Company company, String jobPosition, int reward, String content, String skills) {
+    public JobPost(Long id, Company company, String jobPosition, int reward, String content, String skills) {
+        this.id = id;
         this.company = company;
         this.jobPosition = jobPosition;
         this.reward = reward;

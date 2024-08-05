@@ -124,6 +124,7 @@ class JobPostServiceTest {
         JobPostResponseDto updatedPost = jobPostService.updateJobPost(savedJobPost.getId(), updateDto);
 
         // then
+        assertEquals(savedJobPost.getId(), updatedPost.getId());
         assertEquals(updateDto.getJobPosition(), updatedPost.getJobPosition());
         assertEquals(updateDto.getReward(), updatedPost.getReward());
         assertEquals(updateDto.getContent(), updatedPost.getContent());
