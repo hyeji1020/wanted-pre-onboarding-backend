@@ -46,4 +46,4 @@ JobPost, Application Service 계층에 대해 테스트 코드를 작성하였�
 | feature/feat | 새로운 기능 구현 |
 | refactor | 서비스 로직이나 기능 수정  |
 | fix | 오류 수정 |
-| Docs | 	READ.ME 업데이트  |
+| docs | 	READ.ME 업데이트  |
