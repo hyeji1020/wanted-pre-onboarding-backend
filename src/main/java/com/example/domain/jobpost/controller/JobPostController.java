@@ -52,4 +52,10 @@ public class JobPostController {
         jobPostService.delete(jobPostId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<JobPostResponseDto>> searchJobPosts(@RequestParam String keyword) {
+        List<JobPostResponseDto> postList = jobPostService.searchJobPosts(keyword);
+        return ResponseEntity.ok(postList);
+    }
 }

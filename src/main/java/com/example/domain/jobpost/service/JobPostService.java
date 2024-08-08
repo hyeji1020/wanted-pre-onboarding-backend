@@ -105,4 +105,19 @@ public class JobPostService {
     public void delete(Long jobPostId) {
         jobPostRepository.deleteById(jobPostId);
     }
+
+    // 채용 포지션 검색하기
+    @Transactional
+    public List<JobPostResponseDto> searchJobPosts(String keyword) {
+        List<JobPost> posts = jobPostRepository.findByJobPositionContaining(keyword);
+        List<JobPostResponseDto> postDtoList = new ArrayList<>();
+
+        if(posts.isEmpty()) return postDtoList;
+
+        for(JobPost post : posts) {
+            postDtoList.add(JobPostResponseDto.createFromEntity(post));
+        }
+
+        return postDtoList;
+    }
 }
